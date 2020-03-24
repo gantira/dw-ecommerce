@@ -11,9 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'Ecommerce\FrontController@index')->name('front.index');
+Route::get('/product', 'Ecommerce\FrontController@product')->name('front.product');
 
 Auth::routes();
 
@@ -29,3 +28,4 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
     Route::get('/product/bulk', 'ProductController@massUploadForm')->name('product.bulk'); //TAMBAHKAN ROUTE INI
     Route::post('/product/bulk', 'ProductController@massUpload')->name('product.saveBulk');
 });
+
