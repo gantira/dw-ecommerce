@@ -9,11 +9,12 @@ use Illuminate\Http\Request;
 use App\Product;
 use App\Province;
 use App\Customer;
+use App\Mail\CustomerRegisterMail;
 use App\Order;
 use App\OrderDetail;
 use Illuminate\Support\Str;
 use DB;
-
+use Mail;
 
 class CartController extends Controller
 {
@@ -154,13 +155,15 @@ class CartController extends Controller
                 return $q['qty'] * $q['product_price'];
             });
 
-            //SIMPAN DATA CUSTOMER BARU
+            $password = Str::random(8); //TAMBAHKAN LINE INI
             $customer = Customer::create([
                 'name' => $request->customer_name,
                 'email' => $request->email,
+                'password' => $password, //TAMBAHKAN LINE INI
                 'phone_number' => $request->customer_phone,
                 'address' => $request->customer_address,
                 'district_id' => $request->district_id,
+                'activate_token' => Str::random(30), //TAMBAKAN LINE INI
                 'status' => false
             ]);
 
@@ -196,6 +199,7 @@ class CartController extends Controller
             //KOSONGKAN DATA KERANJANG DI COOKIE
             $cookie = cookie('dw-carts', json_encode($carts), 2880);
             //REDIRECT KE HALAMAN FINISH TRANSAKSI
+            Mail::to($request->email)->send(new CustomerRegisterMail($customer, $password)); //TAMBAHKAN CODE INI SAJA 
             return redirect(route('front.finish_checkout', $order->invoice))->cookie($cookie);
         } catch (\Exception $e) {
             //JIKA TERJADI ERROR, MAKA ROLLBACK DATANYA
