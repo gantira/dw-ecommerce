@@ -29,6 +29,11 @@
                 <i class="nav-icon icon-drop"></i> Produk
             </a>
         </li>
-        
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('orders.index') }}">
+                <i class="nav-icon icon-drop"></i> Pesanan
+            </a>
+        </li>
+
     </ul>
 </nav>
